@@ -19,6 +19,7 @@ public partial class facturasAcceso : System.Web.UI.Page
 		{
 			gridView.DataSource = new DataTable();
 			gridView.DataBind();
+
 		}
 	}
 	/**
@@ -26,7 +27,7 @@ public partial class facturasAcceso : System.Web.UI.Page
 	 * Post: En este metodo se sube el archivo XML a la pagina web almacenandolo en una variable 
 	 * y se muestra en una tabla dentro del gridview.
 	 */
-	protected void subirxml(object sender, EventArgs e)
+	/*protected void subirxml(object sender, EventArgs e)
 	{
 		if (fileUpload.HasFile)
 		{
@@ -67,7 +68,7 @@ public partial class facturasAcceso : System.Web.UI.Page
 		{
 			Response.Write("Por favor, seleccione un archivo XML.");
 		}
-	}
+	}*/
 	/**
 	 * Pre: --
 	 * Post: En este metodo filtraremos la tabla que estamos viendo en el gridview por 
