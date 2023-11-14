@@ -1,0 +1,64 @@
+﻿body {
+	font-family: Arial, sans-serif;
+	background-color: #f2f2f2;
+	margin: 0;
+	padding: 0;
+}
+#form1 {
+	width: 90%;
+	margin: 0 auto;
+	background-color: #ffffff;
+	padding: 20px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+	overflow: auto;
+}
+
+input[type="text"],
+input[type="date"],
+button {
+	margin-bottom: 10px;
+	padding: 10px;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+#btnLoad {
+	background-color: #4caf50;
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+#btnFiltrar,
+#btnLimpiar {
+	background-color: #008CBA;
+	color: white;
+	border: none;
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+.styled-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+	font-size: 16px;
+	text-align: left;
+	width: 100%;
+}
+
+	.styled-table th,
+	.styled-table td {
+		padding: 12px;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.styled-table th {
+		background-color: #008CBA;
+		color: white;
+	}
+
+#filtroContainer {
+	margin-top: 20px;
+}
