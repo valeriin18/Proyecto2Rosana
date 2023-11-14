@@ -13,7 +13,9 @@
 	border-radius: 10px;
 	overflow: auto;
 }
-
+h1{
+	text-align: center;
+}
 input[type="text"],
 input[type="date"],
 button {

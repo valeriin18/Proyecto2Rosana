@@ -6,6 +6,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
 using ClosedXML.Excel;
+using MySql.Data.MySqlClient;
+using System.Configuration;
 
 public partial class facturasAcceso : System.Web.UI.Page
 {
@@ -13,62 +15,34 @@ public partial class facturasAcceso : System.Web.UI.Page
 	 * Pre: --
 	 * Post: En este metodo se cargamos el gridview principal.
 	 */
+	MySqlConnection conn = new MySqlConnection(ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString);
 	protected void Page_Load(object sender, EventArgs e)
 	{
 		if (!IsPostBack)
 		{
 			gridView.DataSource = new DataTable();
 			gridView.DataBind();
-
+			cargarGrid();
 		}
 	}
+
 	/**
 	 * Pre: --
 	 * Post: En este metodo se sube el archivo XML a la pagina web almacenandolo en una variable 
 	 * y se muestra en una tabla dentro del gridview.
 	 */
-	/*protected void subirxml(object sender, EventArgs e)
-	{
-		if (fileUpload.HasFile)
-		{
-			HttpPostedFile file = fileUpload.PostedFile;
-			if (Path.GetExtension(file.FileName).Equals(".xml", StringComparison.OrdinalIgnoreCase))
-			{
-				try
-				{
-					XmlDocument xmlDoc = new XmlDocument();
-					xmlDoc.Load(file.InputStream);
 
-					DataSet ds = new DataSet();
-					ds.ReadXml(new XmlNodeReader(xmlDoc));
-					foreach (DataRow row in ds.Tables[0].Rows)
-					{
-						DateTime fechaFactura = DateTime.Parse((string)row["fechadefactura"]);
-						row["fechadefactura"] = fechaFactura.ToString("dd/MM/yyyy");
-					}
-					Session["XMLData"] = ds;
-					gridView.DataSource = ds.Tables[0];
-					gridView.DataBind();
-					filtroContainer.Visible = true;
-					btnExportar.Visible = true;
-				}
-				catch (Exception ex)
-				{
-					gridView.DataSource = null;
-					gridView.DataBind();
-					Response.Write("Error al procesar el archivo XML: " + ex.Message);
-				}
-			}
-			else
-			{
-				Response.Write("El archivo seleccionado no es un archivo XML.");
-			}
-		}
-		else
-		{
-			Response.Write("Por favor, seleccione un archivo XML.");
-		}
-	}*/
+	private void cargarGrid()
+	{
+		conn.Open();
+		MySqlCommand cmd = new MySqlCommand("Select * from facturas", conn);
+		MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
+		DataSet ds = new DataSet();
+		adp.Fill(ds);
+		gridView.DataSource = ds;
+		gridView.DataBind();
+	}
+
 	/**
 	 * Pre: --
 	 * Post: En este metodo filtraremos la tabla que estamos viendo en el gridview por 
@@ -76,56 +50,51 @@ public partial class facturasAcceso : System.Web.UI.Page
 	 */
 	protected void filtrar(object sender, EventArgs e)
 	{
-		if (Session["XMLData"] is DataSet ds)
+		try
 		{
-			if (!string.IsNullOrEmpty(txtFromDate.Text) && !string.IsNullOrEmpty(txtToDate.Text))
+			DateTime fromDate, toDate;
+
+			if (DateTime.TryParse(txtFromDate.Text, out fromDate) && DateTime.TryParse(txtToDate.Text, out toDate))
 			{
-				if (DateTime.TryParse(txtFromDate.Text, out DateTime fromDate) && DateTime.TryParse(txtToDate.Text, out DateTime toDate))
-				{
-					DataTable datosOriginales = ds.Tables[0];
-					DataTable datosFiltrados = datosOriginales.Clone();
-					foreach (DataRow row in datosOriginales.Rows)
-					{
-						if (DateTime.TryParse(row["fechadefactura"].ToString(), out DateTime fechaFactura))
-						{
-							if (fechaFactura.Date >= fromDate.Date && fechaFactura.Date <= toDate.Date)
-							{
-								datosFiltrados.ImportRow(row);
-							}
-						}
-					}
-					gridView.DataSource = datosFiltrados;
-					gridView.DataBind();
-				}
-				else
-				{
-					Response.Write("Las fechas ingresadas no son válidas.");
-				}
+				conn.Open();
+				MySqlCommand cmd = new MySqlCommand("Select * from facturas where fechaDeFactura", conn);
+
+				MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
+				DataSet ds = new DataSet();
+				adp.Fill(ds);
+				gridView.DataSource = ds;
+				gridView.DataBind();
 			}
 			else
 			{
-				Response.Write("Por favor, ingrese ambas fechas para filtrar.");
+				Response.Write("Por favor, ingrese fechas válidas.");
 			}
 		}
-		else
+		catch (Exception ex)
 		{
-			Response.Write("No se pudo filtrar ya que no se ha cargado un archivo XML.");
+			Response.Write($"Error al filtrar las facturas: {ex.Message}");
+		}
+		finally
+		{
+			conn.Close();
 		}
 	}
+
 	/**
 	 * Pre: --
 	 * Post: En este metodo limpiaremos el filtro y volveremos a mostrar todo el XML etero.
 	 */
 	protected void limpiarFiltro(object sender, EventArgs e)
 	{
-		if (Session["XMLData"] is DataSet ds)
+		DataTable datosOriginales = ((DataSet)gridView.DataSource)?.Tables[0];
+		if (datosOriginales != null)
 		{
-			gridView.DataSource = ds.Tables[0];
+			gridView.DataSource = datosOriginales;
 			gridView.DataBind();
-
-			txtFromDate.Text = "";
-			txtToDate.Text = "";
 		}
+
+		txtFromDate.Text = "";
+		txtToDate.Text = "";
 	}
 	/**
 	 * Pre: --

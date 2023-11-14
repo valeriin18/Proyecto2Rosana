@@ -10,13 +10,16 @@
 <body>
 	<div id="titulo"><h1>PROGRAMA GESTOR DE FACTURAS</h1></div>
 	<form id="form1" runat="server" enctype="multipart/form-data">
-		<asp:Label ID="lblFromDate" runat="server" Text="Desde:"></asp:Label>
-		<asp:TextBox ID="txtFromDate" runat="server" TextMode="Date"></asp:TextBox>
-		<asp:Label ID="lblToDate" runat="server" Text="Hasta:"></asp:Label>
-		<asp:TextBox ID="txtToDate" runat="server" TextMode="Date"></asp:TextBox>
-		<asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" OnClick="filtrar" />
-		<asp:Button ID="btnLimpiar" runat="server" Text="Borrar Filtros" OnClick="limpiarFiltro" />
-		<hr/>
+		<div id="filtroContainer" runat="server">
+			<hr/>
+			<asp:Label ID="lblFromDate" runat="server" Text="Desde:"></asp:Label>
+			<asp:TextBox ID="txtFromDate" runat="server" TextMode="Date"></asp:TextBox>
+			<asp:Label ID="lblToDate" runat="server" Text="Hasta:"></asp:Label>
+			<asp:TextBox ID="txtToDate" runat="server" TextMode="Date"></asp:TextBox>
+			<asp:Button ID="btnFiltrar" runat="server" Text="Filtrar" OnClick="filtrar" />
+			<asp:Button ID="btnLimpiar" runat="server" Text="Borrar Filtros" OnClick="limpiarFiltro" />
+			<hr/>
+		</div>
 		<asp:GridView ID="gridView" runat="server" CssClass="styled-table" AutoGenerateColumns="true">
 		</asp:GridView>
 		<div ID="btnExportar" runat="server" visible="false">
