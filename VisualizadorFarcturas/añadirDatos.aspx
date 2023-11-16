@@ -56,7 +56,7 @@
                 </div>
                 <div class="form-group">
                     <asp:Label runat="server">Método de Pago:</asp:Label>
-                    <asp:TextBox ID="txtMetodoPago" runat="server" CssClass="form-control"></asp:TextBox>
+                    <asp:TextBox ID="txtMetodoDePago" runat="server" CssClass="form-control"></asp:TextBox>
                 </div>
                 <div class="form-group">
                     <asp:Label runat="server">Estado de Factura:</asp:Label>
@@ -65,7 +65,7 @@
             </div>
         </div>
         <div class="form-group">
-            <asp:Button ID="btnAnadirDatos" runat="server" Text="Añadir Datos" CssClass="btn btn-primary" />
+            <asp:Button ID="btnAnadirDatos" runat="server" OnClick="btnAnadirDatos_Click" Text="Añadir Datos" CssClass="btn btn-primary" />
         </div>
     </form>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
