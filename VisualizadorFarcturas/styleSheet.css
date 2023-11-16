@@ -1,0 +1,31 @@
+﻿.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: left;
+}
+
+    .styled-table th,
+    .styled-table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left; /* Establecer la alineación predeterminada a la izquierda para todas las celdas */
+    }
+
+    .styled-table th {
+        background-color: #008CBA;
+        color: white;
+    }
+
+    /* Alineación y formato para importe e importeIVA */
+    .styled-table td:nth-child(6),
+    .styled-table td:nth-child(7) {
+        text-align: right;
+    }
+
+    /* Alineación y formato para fechaDeFactura y fechaCobro */
+    .styled-table td:nth-child(3),
+    .styled-table td:nth-child(9) {
+        text-align: center;
+    }
