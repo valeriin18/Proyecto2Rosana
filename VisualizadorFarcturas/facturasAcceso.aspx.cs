@@ -28,10 +28,9 @@ public partial class facturasAcceso : System.Web.UI.Page
 
 	/**
 	 * Pre: --
-	 * Post: En este metodo se sube el archivo XML a la pagina web almacenandolo en una variable 
-	 * y se muestra en una tabla dentro del gridview.
+	 * Post: En este metodo se hace una select de todo el contenido de la base de datos con la que 
+	 * se ha realizado la conexion y se carga en el gridview.
 	 */
-
 	private void cargarGrid()
 	{
 		conn.Open();
@@ -39,9 +38,43 @@ public partial class facturasAcceso : System.Web.UI.Page
 		MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
 		DataSet ds = new DataSet();
 		adp.Fill(ds);
+		// Modificar formato de los datos en el DataSet
+		foreach (DataRow row in ds.Tables[0].Rows)
+		{
+			for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
+			{
+				// Alineación y formato para números
+				if (ds.Tables[0].Columns[i].DataType == typeof(decimal) ||
+					ds.Tables[0].Columns[i].DataType == typeof(double) ||
+					ds.Tables[0].Columns[i].DataType == typeof(float))
+				{
+					if (decimal.TryParse(row[i].ToString(), out decimal number))
+					{
+						row[i] = number.ToString("#,##0.00");
+					}
+				}
+				// Alineación y formato para DateTime
+				else if (ds.Tables[0].Columns[i].DataType == typeof(DateTime))
+				{
+					if (DateTime.TryParse(row[i].ToString(), out DateTime date))
+					{
+						row[i] = date.ToString("dd/MM/yyyy HH:mm");
+					}
+				}
+				// Alineación y formato para strings
+				else if (ds.Tables[0].Columns[i].DataType == typeof(string))
+				{
+					row[i] = row[i].ToString().ToLower();
+				}
+			}
+		}
+
 		gridView.DataSource = ds;
 		gridView.DataBind();
+
+		conn.Close();
 	}
+
 
 	/**
 	 * Pre: --
@@ -57,8 +90,9 @@ public partial class facturasAcceso : System.Web.UI.Page
 			if (DateTime.TryParse(txtFromDate.Text, out fromDate) && DateTime.TryParse(txtToDate.Text, out toDate))
 			{
 				conn.Open();
-				MySqlCommand cmd = new MySqlCommand("Select * from facturas where fechaDeFactura", conn);
-
+				MySqlCommand cmd = new MySqlCommand("Select * from facturas where fechaDeFactura BETWEEN @fromDate AND @toDate", conn);
+				cmd.Parameters.AddWithValue("@fromDate", fromDate);
+				cmd.Parameters.AddWithValue("@toDate", toDate);
 				MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
 				DataSet ds = new DataSet();
 				adp.Fill(ds);
@@ -84,6 +118,10 @@ public partial class facturasAcceso : System.Web.UI.Page
 	 * Pre: --
 	 * Post: En este metodo limpiaremos el filtro y volveremos a mostrar todo el XML etero.
 	 */
+	/**
+ * Pre: --
+ * Post: En este metodo limpiaremos el filtro y volveremos a mostrar todo el XML entero.
+ */
 	protected void limpiarFiltro(object sender, EventArgs e)
 	{
 		DataTable datosOriginales = ((DataSet)gridView.DataSource)?.Tables[0];
@@ -95,11 +133,13 @@ public partial class facturasAcceso : System.Web.UI.Page
 
 		txtFromDate.Text = "";
 		txtToDate.Text = "";
+		cargarGrid();
 	}
+
 	/**
 	 * Pre: --
 	 * Post: En este metodo exportaremos el contenido que mostramos en el gridview 
-	 * en base al filtro aplicado a un archivo de exce.
+	 * en base al filtro aplicado a un archivo de excel.
 	 */
 	protected void exportarExcel(DataTable dt)
 	{
@@ -178,5 +218,14 @@ public partial class facturasAcceso : System.Web.UI.Page
 		{
 			Response.Write("No hay datos para exportar a Excel.");
 		}
+	}
+	protected void botonAnadirDatos(object sender, EventArgs e)
+	{
+		Response.Redirect("añadirDatos.aspx");
+	}
+
+	protected void botonEditarDatos(object sender, EventArgs e)
+	{
+		Response.Redirect("editarDatos.aspx");
 	}
 }
