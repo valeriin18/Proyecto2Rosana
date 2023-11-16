@@ -20,6 +20,7 @@ public partial class facturasAcceso : System.Web.UI.Page
 	{
 		if (!IsPostBack)
 		{
+			Session["DatosOriginales"] = null;
 			gridView.DataSource = new DataTable();
 			gridView.DataBind();
 			cargarGrid();
@@ -71,7 +72,7 @@ public partial class facturasAcceso : System.Web.UI.Page
 
 		gridView.DataSource = ds;
 		gridView.DataBind();
-
+		Session["DatosOriginales"] = ds.Tables[0];
 		conn.Close();
 	}
 
@@ -98,6 +99,7 @@ public partial class facturasAcceso : System.Web.UI.Page
 				adp.Fill(ds);
 				gridView.DataSource = ds;
 				gridView.DataBind();
+				Session["DatosOriginales"] = ds.Tables[0];
 			}
 			else
 			{
@@ -124,7 +126,7 @@ public partial class facturasAcceso : System.Web.UI.Page
  */
 	protected void limpiarFiltro(object sender, EventArgs e)
 	{
-		DataTable datosOriginales = ((DataSet)gridView.DataSource)?.Tables[0];
+		DataTable datosOriginales = Session["DatosOriginales"] as DataTable;
 		if (datosOriginales != null)
 		{
 			gridView.DataSource = datosOriginales;
