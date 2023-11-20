@@ -98,12 +98,34 @@ public partial class facturasAcceso : System.Web.UI.Page
 			if (DateTime.TryParse(txtFromDate.Text, out fromDate) && DateTime.TryParse(txtToDate.Text, out toDate))
 			{
 				conn.Open();
-				MySqlCommand cmd = new MySqlCommand("Select * from facturas where fechaDeFactura BETWEEN @fromDate AND @toDate", conn);
+				MySqlCommand cmd = new MySqlCommand("Select idFactura, numFactura as Num, fechaDeFactura as 'F. Factura', cifCliente as CIF, NombreApellidos as Cliente, importe as Importe, importeIVA as '+IVA', moneda as 'Moneda', fechaCobro as 'F. Cobro', metodoDePago as 'Método pago', estadoFactura as Estado from facturas where fechaDeFactura BETWEEN @fromDate AND @toDate", conn);
 				cmd.Parameters.AddWithValue("@fromDate", fromDate);
 				cmd.Parameters.AddWithValue("@toDate", toDate);
 				MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
 				DataSet ds = new DataSet();
 				adp.Fill(ds);
+				// Modificar formato de los datos en el DataSet
+				foreach (DataRow row in ds.Tables[0].Rows)
+				{
+					for (int i = 0; i < ds.Tables[0].Columns.Count; i++)
+					{
+						// Alineación y formato para números
+						if (ds.Tables[0].Columns[i].DataType == typeof(decimal) ||
+							ds.Tables[0].Columns[i].DataType == typeof(double) ||
+							ds.Tables[0].Columns[i].DataType == typeof(float))
+						{
+							if (decimal.TryParse(row[i].ToString(), out decimal number))
+							{
+								row[i] = number.ToString("#,##0.00");
+							}
+						}
+						// Alineación y formato para strings
+						else if (ds.Tables[0].Columns[i].DataType == typeof(string))
+						{
+							row[i] = row[i].ToString().ToLower();
+						}
+					}
+				}
 				gridView.DataSource = ds;
 				gridView.DataBind();
 				Session["DatosOriginales"] = ds.Tables[0];
@@ -127,10 +149,6 @@ public partial class facturasAcceso : System.Web.UI.Page
 	 * Pre: --
 	 * Post: En este metodo limpiaremos el filtro y volveremos a mostrar todo el XML etero.
 	 */
-	/**
- * Pre: --
- * Post: En este metodo limpiaremos el filtro y volveremos a mostrar todo el XML entero.
- */
 	protected void limpiarFiltro(object sender, EventArgs e)
 	{
 		DataTable datosOriginales = Session["DatosOriginales"] as DataTable;
@@ -172,9 +190,7 @@ public partial class facturasAcceso : System.Web.UI.Page
 						worksheet.Cells[i + 2, j + 1] = dt.Rows[i][j].ToString();
 					}
 				}
-				workbook.SaveAs(@"C:\Ruta\TuArchivo.xlsx");
-				workbook.Close();
-				excelApp.Quit();
+				workbook.SaveAs(@"C:\facturas.xlsx");
 			}
 			else
 			{
@@ -203,9 +219,9 @@ public partial class facturasAcceso : System.Web.UI.Page
 
 					foreach (DataRow row in datosOriginal.Rows)
 					{
-						if (DateTime.TryParse(row["fechadefactura"].ToString(), out DateTime fechaFactura))
+						if (DateTime.TryParse(row["FechaDeFactura"].ToString(), out DateTime FechaDeFactura))
 						{
-							if (fechaFactura.Date >= fromDate.Date && fechaFactura.Date <= toDate.Date)
+							if (FechaDeFactura.Date >= fromDate.Date && FechaDeFactura.Date <= toDate.Date)
 							{
 								datosFiltrados.ImportRow(row);
 							}
