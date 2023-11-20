@@ -38,8 +38,11 @@
             </div>
             <hr />
         </div>
-        <asp:GridView ID="gridView" runat="server" CssClass="table table-bordered table-striped">
+        <asp:GridView ID="gridView" runat="server" DataKeyNames="idFactura" CssClass="table table-bordered table-striped"
+            AutoGenerateEditButton="True" OnRowEditing="gridView_RowEditing"
+            OnRowUpdating="gridView_RowUpdating" OnRowCancelingEdit="gridView_RowCancelingEdit" >
         </asp:GridView>
+
         <div ID="btnExportar" runat="server" class="mt-4">
             <hr />
             <asp:Button runat="server" Text="Exportar a Excel" OnClick="botonExportarExcel" CssClass="btn btn-success" />

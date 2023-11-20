@@ -35,7 +35,7 @@ public partial class facturasAcceso : System.Web.UI.Page
 	private void cargarGrid()
 	{
 		conn.Open();
-		MySqlCommand cmd = new MySqlCommand("Select * from facturas", conn);
+		MySqlCommand cmd = new MySqlCommand("Select idFactura, numFactura as Num, fechaDeFactura as 'F. Factura', cifCliente as CIF, NombreApellidos as Cliente, importe as Importe, importeIVA as '+IVA', moneda as 'Moneda', fechaCobro as 'F. Cobro', metodoDePago as 'Método pago', estadoFactura as Estado from facturas", conn);
 		MySqlDataAdapter adp = new MySqlDataAdapter(cmd);
 		DataSet ds = new DataSet();
 		adp.Fill(ds);
@@ -68,6 +68,13 @@ public partial class facturasAcceso : System.Web.UI.Page
 					row[i] = row[i].ToString().ToLower();
 				}
 			}
+		}
+
+		if (gridView.EditIndex != -1)
+		{
+			// Estás en modo de edición, ajusta la fila editada
+			gridView.Rows[gridView.EditIndex].Cells[0].Controls[0].Visible = false; // Oculta el botón Editar en la fila editada
+																					// Puedes hacer más ajustes según sea necesario
 		}
 
 		gridView.DataSource = ds;
@@ -221,6 +228,81 @@ public partial class facturasAcceso : System.Web.UI.Page
 			Response.Write("No hay datos para exportar a Excel.");
 		}
 	}
+
+	protected void gridView_RowEditing(object sender, GridViewEditEventArgs e)
+	{
+		gridView.EditIndex = e.NewEditIndex;
+		cargarGrid(); // Recargar los datos después de activar la edición
+	}
+
+	protected void gridView_RowUpdating(object sender, GridViewUpdateEventArgs e)
+	{
+		try
+		{
+			// Obtener el ID de la fila que se está actualizando desde DataKeys
+			int idFactura = Convert.ToInt32(gridView.DataKeys[e.RowIndex].Value);
+
+			string nuevoNumFactura = e.NewValues["Num"]?.ToString();
+			string nuevoFechaDeFactura = e.NewValues["F. Factura"]?.ToString();
+			string nuevoCifCliente = e.NewValues["CIF"]?.ToString();
+			string nuevoNombreApellidos = e.NewValues["Cliente"]?.ToString();
+			decimal nuevoImporte = Convert.ToDecimal(e.NewValues["Importe"]);
+			decimal nuevoImporteIVA = Convert.ToDecimal(e.NewValues["+IVA"]);
+			string nuevaMoneda = e.NewValues["Moneda"]?.ToString();
+			string nuevaFechaCobro = e.NewValues["F. Cobro"]?.ToString();
+			string nuevoMetodoDePago = e.NewValues["Método pago"]?.ToString();
+			string nuevoEstadoFactura = e.NewValues["Estado"]?.ToString();
+
+			// Aquí debes escribir la lógica para actualizar la base de datos
+			conn.Open();
+			MySqlCommand cmd = new MySqlCommand("UPDATE facturas SET " +
+				"numFactura = @nuevoNumFactura, " +
+				"fechaDeFactura = @nuevoFechaDeFactura, " +
+				"cifCliente = @nuevoCifCliente, " +
+				"NombreApellidos = @nuevoNombreApellidos, " +
+				"importe = @nuevoImporte, " +
+				"importeIVA = @nuevoImporteIVA, " +
+				"moneda = @nuevaMoneda, " +
+				"fechaCobro = @nuevaFechaCobro, " +
+				"metodoDePago = @nuevoMetodoDePago, " +
+				"estadoFactura = @nuevoEstadoFactura " +
+				"WHERE idFactura = @idFactura", conn);
+
+			cmd.Parameters.AddWithValue("@NuevoNumFactura", nuevoNumFactura);
+			cmd.Parameters.AddWithValue("@NuevoFechaDeFactura", nuevoFechaDeFactura);
+			cmd.Parameters.AddWithValue("@NuevoCifCliente", nuevoCifCliente);
+			cmd.Parameters.AddWithValue("@NuevoNombreApellidos", nuevoNombreApellidos);
+			cmd.Parameters.AddWithValue("@NuevoImporte", nuevoImporte);
+			cmd.Parameters.AddWithValue("@NuevoImporteIVA", nuevoImporteIVA);
+			cmd.Parameters.AddWithValue("@NuevaMoneda", nuevaMoneda);
+			cmd.Parameters.AddWithValue("@NuevaFechaCobro", nuevaFechaCobro);
+			cmd.Parameters.AddWithValue("@NuevoMetodoDePago", nuevoMetodoDePago);
+			cmd.Parameters.AddWithValue("@NuevoEstadoFactura", nuevoEstadoFactura);
+			cmd.Parameters.AddWithValue("@IdFactura", idFactura);
+
+			cmd.ExecuteNonQuery();
+			conn.Close();
+
+			gridView.EditIndex = -1; // Desactivar el modo de edición
+			cargarGrid(); // Recargar los datos después de la actualización
+		}
+		catch (Exception ex)
+		{
+			// Manejar la excepción, podrías mostrar un mensaje al usuario o registrar el error
+			Response.Write($"Error al actualizar la fila: {ex.Message}");
+		}
+		finally
+		{
+			conn.Close();
+		}
+	}
+
+	protected void gridView_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+	{
+		gridView.EditIndex = -1;
+		cargarGrid();
+	}
+
 	protected void botonAnadirDatos(object sender, EventArgs e)
 	{
 		Response.Redirect("añadirDatos.aspx");
