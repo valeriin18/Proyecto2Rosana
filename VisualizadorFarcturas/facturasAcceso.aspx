@@ -16,7 +16,6 @@
         <div id="filtroContainer" runat="server" class="mb-4">
             <div class="btn-group mb-2">
                 <asp:Button runat="server" Text="Añadir Datos" OnClick="botonAnadirDatos" CssClass="btn btn-primary" />
-                <asp:Button runat="server" Text="Editar Datos" OnClick="botonEditarDatos" CssClass="btn btn-secondary" />
             </div>
             <hr />
             <div class="form-row align-items-center">

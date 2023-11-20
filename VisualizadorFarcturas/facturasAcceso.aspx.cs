@@ -323,9 +323,4 @@ public partial class facturasAcceso : System.Web.UI.Page
 	{
 		Response.Redirect("añadirDatos.aspx");
 	}
-
-	protected void botonEditarDatos(object sender, EventArgs e)
-	{
-		Response.Redirect("editarDatos.aspx");
-	}
 }
