@@ -51,10 +51,6 @@
                         <asp:Label runat="server">Nombre y Apellidos:</asp:Label>
                         <asp:TextBox ID="txtNombreApellidos" runat="server" CssClass="form-control"></asp:TextBox>
                     </div>
-                    <div class="form-group">
-                        <asp:Label runat="server">Importe:</asp:Label>
-                        <asp:TextBox ID="txtImporte" runat="server" CssClass="form-control"></asp:TextBox>
-                    </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
@@ -69,8 +65,8 @@
                         </asp:DropDownList>
                     </div>
                     <div class="form-group">
-                        <asp:Label runat="server">Fecha de Cobro:</asp:Label>
-                        <asp:TextBox ID="txtFechaCobro" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
+                        <asp:Label runat="server">Importe:</asp:Label>
+                        <asp:TextBox ID="txtImporte" runat="server" CssClass="form-control"></asp:TextBox>
                     </div>
                     <div class="form-group">
                         <asp:Label runat="server">Método de Pago:</asp:Label>

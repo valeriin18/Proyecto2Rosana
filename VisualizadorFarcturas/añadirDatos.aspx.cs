@@ -24,9 +24,8 @@ public partial class añadirDatos : System.Web.UI.Page
             decimal importe = decimal.Parse(txtImporte.Text);
             decimal importeIVA = decimal.Parse(txtImporteIVA.Text);
             string moneda = txtMoneda.Text;
-            DateTime fechaCobro = DateTime.Parse(txtFechaCobro.Text);
             string metodoDePago = txtMetodoDePago.Text;
-            string estadoFactura = txtEstadoFactura.Text;
+            bool estadoFactura = txtEstadoFactura.Checked;
             MySqlCommand cmd = new MySqlCommand("INSERT INTO facturas (IdFactura, NumFactura, FechaDeFactura, CIFCliente, NombreApellidos, Importe, ImporteIVA, Moneda, FechaCobro, MetodoDePago, EstadoFactura) VALUES (@IdFactura, @NumFactura, @FechaDeFactura, @CIFCliente, @NombreApellidos, @Importe, @ImporteIVA, @Moneda, @FechaCobro, @MetodoDePago, @EstadoFactura)", conn);
             cmd.Parameters.AddWithValue("@IdFactura", idFactura);
             cmd.Parameters.AddWithValue("@NumFactura", numFactura);
@@ -36,6 +35,7 @@ public partial class añadirDatos : System.Web.UI.Page
             cmd.Parameters.AddWithValue("@Importe", importe);
             cmd.Parameters.AddWithValue("@ImporteIVA", importeIVA);
             cmd.Parameters.AddWithValue("@Moneda", moneda);
+            DateTime? fechaCobro = estadoFactura ? DateTime.Now : (DateTime?)null;
             cmd.Parameters.AddWithValue("@FechaCobro", fechaCobro);
             cmd.Parameters.AddWithValue("@MetodoDePago", metodoDePago);
             cmd.Parameters.AddWithValue("@EstadoFactura", estadoFactura);
