@@ -32,14 +32,6 @@
             <div id="formularioContainer" runat="server" class="row">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <asp:Label runat="server">ID de Factura:</asp:Label>
-                        <asp:TextBox ID="txtIdFactura" runat="server" CssClass="form-control"></asp:TextBox>
-                    </div>
-                    <div class="form-group">
-                        <asp:Label runat="server">Número de Factura:</asp:Label>
-                        <asp:TextBox ID="txtNumFactura" runat="server" CssClass="form-control"></asp:TextBox>
-                    </div>
-                    <div class="form-group">
                         <asp:Label runat="server">Fecha de Factura:</asp:Label>
                         <asp:TextBox ID="txtFechaFactura" runat="server" TextMode="Date" CssClass="form-control"></asp:TextBox>
                     </div>
@@ -50,6 +42,10 @@
                     <div class="form-group">
                         <asp:Label runat="server">Nombre y Apellidos:</asp:Label>
                         <asp:TextBox ID="txtNombreApellidos" runat="server" CssClass="form-control"></asp:TextBox>
+                    </div>
+                    <div class="form-group">
+                        <asp:Label runat="server">Estado de Factura:</asp:Label>
+                        <asp:CheckBox ID="txtEstadoFactura" runat="server" CssClass="form-control"></asp:CheckBox>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -75,10 +71,6 @@
                             <asp:ListItem Text="Via Telefonica" Value="Via Telefonica" />
                             <asp:ListItem Text="Via Cajero Automatico" Value="Via Cajero Automatico" />
                         </asp:DropDownList>
-                    </div>
-                    <div class="form-group">
-                        <asp:Label runat="server">Estado de Factura:</asp:Label>
-                        <asp:CheckBox ID="txtEstadoFactura" runat="server" CssClass="form-control"></asp:CheckBox>
                     </div>
                 </div>
             </div>
